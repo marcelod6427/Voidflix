@@ -1,6 +1,6 @@
 """
 VOIDFLIX - Servidor Local com TMDB API
-Roda em http://localhost:8765
+Roda em 0.0.0.0
 """
 
 import http.server
@@ -222,7 +222,7 @@ def preload():
 def main():
     print("=" * 52)
     print("  VOIDFLIX — Servidor Local  |  TMDB Edition")
-    print(f"  http://localhost:{PORT}")
+    print(f"  http://0.0.0.0:{PORT}")
     print("=" * 52)
 
     if not os.path.exists(FRONTEND_FILE):
@@ -233,11 +233,11 @@ def main():
 
     threading.Thread(target=preload, daemon=True).start()
 
-    server = http.server.ThreadingHTTPServer(("localhost", PORT), VoidFlixHandler)
-    print(f"\n[VoidFlix] Rodando em http://localhost:{PORT}")
+    server = http.server.ThreadingHTTPServer(("0.0.0.0", PORT), VoidFlixHandler)
+    print(f"\n[VoidFlix] Rodando em http://0.0.0.0:{PORT}")
     print("[VoidFlix] Abrindo navegador...")
     print("[VoidFlix] Ctrl+C ou feche esta janela para encerrar\n")
-    threading.Timer(1.0, lambda: webbrowser.open(f"http://localhost:{PORT}")).start()
+    threading.Timer(1.0, lambda: webbrowser.open(f"http://0.0.0.0:{PORT}")).start()
 
     try:
         server.serve_forever()
