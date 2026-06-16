@@ -199,6 +199,110 @@ footer{background:var(--footer-bg);margin:0 -20px;padding:40px 20px 30px;text-al
 #btt.show{opacity:1;transform:translateY(0) scale(1);pointer-events:all}
 #btt:hover{box-shadow:0 0 0 3.5px rgba(192,132,252,.4),0 6px 28px rgba(168,85,247,.65);transform:translateY(-3px) scale(1.09)}
 #btt svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round}
+
+  /*
+ * ═══════════════════════════════════════════════════════
+ *  VOIDFLIX — Mobile Fixes
+ *  Cole este bloco inteiro logo antes do no index.html
+ * ═══════════════════════════════════════════════════════
+ */
+
+/* ── Título do modal: nunca vaza, sempre quebra ─────────
+   O principal bug: título longo quebrava o layout inteiro */
+#modal-title {
+  font-size: clamp(1.3rem, 5vw, 2.2rem);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+  white-space: normal;
+  max-width: 100%;
+}
+
+/* ── Title row: empilha em vez de transbordar ── */
+.modal-title-row {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/* ── Scroll suave e contido no carrossel (touch) ── */
+.carousel-track {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+/* ── Proteção geral contra overflow de texto ── */
+#modal-title,
+#modal-overview,
+#modal-cast,
+.sr-header,
+.card-title {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* ══════════════════════════════════════════════════════
+   BREAKPOINT MOBILE  ≤ 640px
+   ══════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+
+  /* Body: margem menor — mais espaço útil */
+  body { margin: 10px; margin-bottom: 0; }
+
+  /* Header */
+  header { padding: 14px 0 10px; gap: 14px; }
+
+  /* Search: usa a largura disponível */
+  .search-input { width: min(88vw, 340px); }
+
+  /* ── SETAS DO CARROSSEL: ocultadas em mobile ──────────
+     Em touch o usuário arrasta com o dedo (swipe nativo).
+     As setas consumiam ~96px de largura útil — espaço devolvido. */
+  .arr { display: none !important; }
+
+  /* Carousel sem padding reservado para setas */
+  .carousel-wrap { padding: 0 8px; }
+
+  /* Card: 150px mostra 1.5 cards → dá dica visual de scroll */
+  .card { flex: 0 0 150px; height: 225px; }
+
+  /* Section title */
+  .section-title { padding-left: 20px; font-size: 1.3rem; }
+
+  /* ── MODAL ── */
+  #modal { border-radius: 16px; }
+  #modal-info { padding: 20px 18px 18px; }
+  #modal-overview { font-size: .85rem; }
+  #modal-cast     { font-size: .76rem; }
+  #modal-badges   { gap: 6px; }
+  .mbadge { font-size: .68rem; padding: 3px 10px; }
+
+  /* Player: proporcional (16:9 aprox) em vez de 420px fixo */
+  #player-area {
+    height: 52vw;
+    min-height: 200px;
+    max-height: 340px;
+  }
+
+  /* Botões empilhados — mais fáceis de tocar */
+  .modal-btns { flex-direction: column; }
+  #btn-trailer,
+  #btn-tmdb { width: 100%; justify-content: center; }
+
+  /* Back to top: mais compacto */
+  #btt { bottom: 20px; right: 16px; width: 42px; height: 42px; }
+}
+
+/* ══════════════════════════════════════════════════════
+   BREAKPOINT TELA MUITO PEQUENA  ≤ 360px
+   ══════════════════════════════════════════════════════ */
+@media (max-width: 360px) {
+  .card { flex: 0 0 130px; height: 195px; }
+  .logo { font-size: 2rem; }
+  #modal-info { padding: 16px 14px 14px; }
+  }
+  
 </style>
 </head>
 <body>
