@@ -17,7 +17,6 @@
 html{scroll-behavior:smooth}
 body{
   min-height:100vh;
-  /* PERF: background-attachment:scroll em vez de fixed — evita repaint constante em mobile */
   background:linear-gradient(105deg,#e9d5ff 0%,#c084fc 28%,#9333ea 55%,#581c87 78%,#2e1065 100%);
   background-attachment:scroll;
   font-family:'DM Sans',sans-serif;
@@ -36,8 +35,7 @@ header{display:flex;align-items:center;justify-content:space-around;gap:24px;pad
 .search-wrap{position:relative;display:flex;align-items:center;flex-direction:column}
 .search-row{position:relative;display:flex;align-items:center}
 .search-ico{position:absolute;left:14px;width:17px;height:17px;stroke:var(--p2);fill:none;stroke-width:2;stroke-linecap:round;pointer-events:none;transition:stroke .25s;z-index:1}
-/* PERF: transition apenas nas propriedades que mudam, não transition:all */
-.search-input{width:clamp(240px,34vw,440px);padding:10px 42px 10px 42px;background:transparent;border:2px solid var(--p2);border-radius:999px;font-family:'DM Sans',sans-serif;font-size:.93rem;color:#fff;outline:none;transition:border-color .3s,background .3s,box-shadow .3s}
+.search-input{width:clamp(240px,34vw,440px);padding:10px 42px;background:transparent;border:2px solid var(--p2);border-radius:999px;font-family:'DM Sans',sans-serif;font-size:.93rem;color:#fff;outline:none;transition:border-color .3s,background .3s,box-shadow .3s}
 .search-input::placeholder{color:var(--p2);opacity:1}
 .search-input:focus{border-color:var(--p1);background:rgba(76,29,149,.2);box-shadow:0 0 0 3px rgba(168,85,247,.2),0 0 20px rgba(168,85,247,.15)}
 .search-wrap:focus-within .search-ico{stroke:var(--p1)}
@@ -69,14 +67,12 @@ hr{border:none;border-top:1px solid rgba(192,132,252,.35);margin:6px 0;box-shado
 
 /* ══ MAIN ══ */
 main{padding:16px 0 40px;min-height:300px}
-/* PERF: content-visibility:auto — browser não renderiza seções fora da viewport */
 .section{margin-bottom:44px;content-visibility:auto;contain-intrinsic-size:0 340px}
 .section-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.09em;color:var(--p3);margin-bottom:16px;display:flex;align-items:center;gap:10px;padding-left:48px}
 .section-title::before{content:'';display:block;width:4px;height:1.25em;background:linear-gradient(180deg,var(--p3),var(--p4));border-radius:3px}
 
 /* ══ CARROSSEL ══ */
 .carousel-wrap{position:relative;padding:0 48px}
-/* PERF: backdrop-filter removido das setas — pesado em GPU fraca */
 .arr{position:absolute;top:50%;transform:translateY(-50%);z-index:20;width:42px;height:42px;border-radius:50%;border:1.5px solid rgba(192,132,252,.5);background:rgba(46,16,101,.92);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--p1);transition:background .2s,transform .2s;will-change:transform}
 .arr svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round}
 .arr.prev{left:0}.arr.next{right:0}
@@ -87,16 +83,25 @@ main{padding:16px 0 40px;min-height:300px}
 .carousel-track::-webkit-scrollbar{display:none}
 
 /* ══ CARD ══ */
-/* PERF: backdrop-filter:blur removido — principal culpado de lentidão em mobile
-         box-shadow no hover simplificado — menos camadas = menos compositing
-         will-change:transform — avisa o browser para criar layer separado */
 .card{flex:0 0 180px;height:270px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;position:relative;overflow:hidden;cursor:pointer;transition:transform .25s ease,border-color .25s ease;will-change:transform;contain:layout style}
 .card:hover{transform:scale(1.06);border-color:rgba(192,132,252,.75);z-index:5}
 .card-poster{width:100%;height:100%;object-fit:cover;display:block;transition:filter .25s}
 .card:hover .card-poster{filter:brightness(.72)}
 .card-poster-ph{width:100%;height:100%;background:linear-gradient(135deg,rgba(76,29,149,.9),rgba(20,6,46,.98));display:flex;align-items:center;justify-content:center;font-size:3rem}
 .card-overlay{position:absolute;bottom:0;left:0;right:0;padding:10px 12px 12px;background:linear-gradient(0deg,rgba(8,1,22,.98) 0%,rgba(8,1,22,.6) 60%,transparent 100%)}
-.card-title{font-size:.78rem;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* CORREÇÃO DO TÍTULO DO CARD (Não deixa quebrar e adiciona "...") */
+.card-title{
+  font-size:.78rem;
+  font-weight:600;
+  line-height:1.3;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  word-break:break-word;
+}
 .card-year{font-size:.68rem;color:var(--muted);margin-top:3px}
 .card-rating{position:absolute;top:8px;right:8px;background:rgba(8,1,22,.82);border:1px solid rgba(168,85,247,.4);border-radius:999px;padding:3px 8px;font-size:.7rem;font-weight:600;color:#fbbf24;display:flex;align-items:center;gap:3px}
 .card-rating svg{width:10px;height:10px;fill:#fbbf24;stroke:none}
@@ -115,7 +120,6 @@ main{padding:16px 0 40px;min-height:300px}
 #no-results svg{width:50px;height:50px;stroke:var(--p3);fill:none;stroke-width:1.5}
 
 /* ══ MODAL ══ */
-/* PERF: backdrop-filter:blur(16px) removido do overlay — muito pesado */
 #modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0);display:flex;align-items:center;justify-content:center;pointer-events:none;transition:background .3s;padding:20px}
 #modal-overlay.open{background:rgba(3,0,12,.92);pointer-events:all}
 #modal{
@@ -136,15 +140,29 @@ main{padding:16px 0 40px;min-height:300px}
 #modal-close:hover{background:rgba(126,34,206,.75);transform:scale(1.1) rotate(90deg)}
 #modal-close svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round}
 
-/* ══ MODAL INFO (topo — acima do player) ══ */
+/* ══ MODAL INFO ══ */
 #modal-info{padding:28px 32px 24px;border-bottom:1px solid rgba(168,85,247,.12)}
 .modal-title-row{display:flex;align-items:baseline;flex-wrap:wrap;gap:12px;margin-bottom:12px}
-#modal-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.07em;line-height:1.1;text-shadow:0 0 14px rgba(168,85,247,.3);flex-shrink:0}
+
+/* CORREÇÃO DO TÍTULO DO MODAL */
+#modal-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(1.6rem, 5vw, 2.2rem);
+  letter-spacing:.07em;
+  line-height:1.1;
+  text-shadow:0 0 14px rgba(168,85,247,.3);
+  flex-shrink:0;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+  white-space: normal;
+  max-width: 100%;
+}
 .modal-title-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .title-dot{color:var(--muted);font-size:.9rem}
 #modal-badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
-#modal-overview{font-size:.9rem;color:rgba(240,233,255,.75);line-height:1.7;margin-bottom:10px;max-width:680px}
-#modal-cast{font-size:.8rem;color:var(--muted);margin-bottom:24px}
+#modal-overview{font-size:.9rem;color:rgba(240,233,255,.75);line-height:1.7;margin-bottom:10px;max-width:680px;word-break: break-word;}
+#modal-cast{font-size:.8rem;color:var(--muted);margin-bottom:24px;word-break: break-word;}
 #modal-cast strong{color:var(--p1);font-weight:600}
 .modal-btns{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 #btn-trailer{display:flex;align-items:center;gap:8px;padding:12px 30px;border-radius:999px;background:linear-gradient(135deg,var(--p2),var(--p4));border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:.92rem;font-weight:600;cursor:pointer;transition:box-shadow .25s,transform .2s;box-shadow:0 4px 20px rgba(168,85,247,.4)}
@@ -166,7 +184,6 @@ main{padding:16px 0 40px;min-height:300px}
 #player-loading .spinner{margin:0}
 #player-loading p{font-size:.82rem;color:var(--muted)}
 
-/* dica troubleshooting */
 #player-tip{display:flex;align-items:flex-start;gap:12px;padding:14px 20px;margin-top:16px;background:rgba(168,85,247,.07);border-top:1px solid rgba(168,85,247,.15);border-radius:0 0 22px 22px}
 #player-tip svg{width:18px;height:18px;stroke:#fbbf24;fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;margin-top:1px}
 #player-tip p{font-size:.78rem;color:rgba(240,233,255,.55);line-height:1.6}
@@ -200,77 +217,27 @@ footer{background:var(--footer-bg);margin:0 -20px;padding:40px 20px 30px;text-al
 #btt:hover{box-shadow:0 0 0 3.5px rgba(192,132,252,.4),0 6px 28px rgba(168,85,247,.65);transform:translateY(-3px) scale(1.09)}
 #btt svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round}
 
-  /*
- * ═══════════════════════════════════════════════════════
- *  VOIDFLIX — Mobile Fixes
- *  Cole este bloco inteiro logo antes do no index.html
- * ═══════════════════════════════════════════════════════
- */
-
-/* ── Título do modal: nunca vaza, sempre quebra ─────────
-   O principal bug: título longo quebrava o layout inteiro */
-#modal-title {
-  font-size: clamp(1.3rem, 5vw, 2.2rem);
-  word-break: break-word;
-  overflow-wrap: anywhere;
-  hyphens: auto;
-  white-space: normal;
-  max-width: 100%;
-}
-
-/* ── Title row: empilha em vez de transbordar ── */
-.modal-title-row {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-}
-
-/* ── Scroll suave e contido no carrossel (touch) ── */
-.carousel-track {
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-x: contain;
-}
-
-/* ── Proteção geral contra overflow de texto ── */
-#modal-title,
-#modal-overview,
-#modal-cast,
-.sr-header,
-.card-title {
-  max-width: 100%;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
 
 /* ══════════════════════════════════════════════════════
-   BREAKPOINT MOBILE  ≤ 640px
+   BREAKPOINT MOBILE  ≤ 768px (Ajustado para cobrir mais telas)
    ══════════════════════════════════════════════════════ */
-@media (max-width: 640px) {
-
-  /* Body: margem menor — mais espaço útil */
+@media (max-width: 768px) {
   body { margin: 10px; margin-bottom: 0; }
-
-  /* Header */
   header { padding: 14px 0 10px; gap: 14px; }
-
-  /* Search: usa a largura disponível */
   .search-input { width: min(88vw, 340px); }
 
-  /* ── SETAS DO CARROSSEL: ocultadas em mobile ──────────
-     Em touch o usuário arrasta com o dedo (swipe nativo).
-     As setas consumiam ~96px de largura útil — espaço devolvido. */
+  /* REMOVE AS SETAS E AJUSTA O ESPAÇAMENTO DO CARROSSEL */
   .arr { display: none !important; }
-
-  /* Carousel sem padding reservado para setas */
   .carousel-wrap { padding: 0 8px; }
+  .carousel-track {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
 
-  /* Card: 150px mostra 1.5 cards → dá dica visual de scroll */
   .card { flex: 0 0 150px; height: 225px; }
-
-  /* Section title */
   .section-title { padding-left: 20px; font-size: 1.3rem; }
 
-  /* ── MODAL ── */
+  .modal-title-row { flex-direction: column; align-items: flex-start; gap: 8px; }
   #modal { border-radius: 16px; }
   #modal-info { padding: 20px 18px 18px; }
   #modal-overview { font-size: .85rem; }
@@ -278,19 +245,14 @@ footer{background:var(--footer-bg);margin:0 -20px;padding:40px 20px 30px;text-al
   #modal-badges   { gap: 6px; }
   .mbadge { font-size: .68rem; padding: 3px 10px; }
 
-  /* Player: proporcional (16:9 aprox) em vez de 420px fixo */
   #player-area {
     height: 52vw;
     min-height: 200px;
     max-height: 340px;
   }
 
-  /* Botões empilhados — mais fáceis de tocar */
   .modal-btns { flex-direction: column; }
-  #btn-trailer,
-  #btn-tmdb { width: 100%; justify-content: center; }
-
-  /* Back to top: mais compacto */
+  #btn-trailer, #btn-tmdb { width: 100%; justify-content: center; }
   #btt { bottom: 20px; right: 16px; width: 42px; height: 42px; }
 }
 
@@ -301,8 +263,7 @@ footer{background:var(--footer-bg);margin:0 -20px;padding:40px 20px 30px;text-al
   .card { flex: 0 0 130px; height: 195px; }
   .logo { font-size: 2rem; }
   #modal-info { padding: 16px 14px 14px; }
-  }
-  
+}
 </style>
 </head>
 <body>
